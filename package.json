@@ -1,0 +1,24 @@
+{
+  "name": "scalableassignment2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DankerMemes/scalableAssignment2.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DankerMemes/scalableAssignment2/issues"
+  },
+  "homepage": "https://github.com/DankerMemes/scalableAssignment2#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-handlebars": "^4.0.4",
+    "python-shell": "^2.0.0"
+  }
+}
