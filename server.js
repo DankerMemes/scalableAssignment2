@@ -20,7 +20,9 @@ app.post('/launch',function (req, res) {
         if (err){
             throw err;
         };
-    
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization')
         res.send(results);
     });
 })
@@ -38,7 +40,10 @@ app.get('/evaluate',function (req, res) {
         if (err){
             throw err;
         };
-    
+        
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization')
         res.send(results);
     });
 })

@@ -4,40 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>English/German Translation</title>
-    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+function launchModel(){
+    $.post( "http://localhost:3000/launch", function( data ) {
+        var outputstring = "";
+        for (let index = 0; index < data.length; index++) {
+            outputstring += data[index] + '\n';
+            
+        }
+        $( "#outputArea" ).html( outputstring );
+      });
+
+}
+
+function evaluateModel(){
+    $.get( "http://localhost:3000/evaluate", function( data ) {
+        var outputstring = "";
+        for (let index = 0; index < data.length; index++) {
+            outputstring += data[index] + '\n';
+            
+        }
+        $( "#outputArea" ).html( outputstring );
+      });
+}
+$(document).ready(function(){
+$('#launch').on('click', function(){
+    console.log('launching');
+    launchModel();
+})
+
+$('#evaluate').on('click', function(){
+    console.log('launching');
+    evaluateModel();
+})})
+    </script>
 </head>
 <body>
-    <script>
-        function launchModel() {
-    console.log("test");
-    var request = new XMLHttpRequest();
-    request.onreadystatechange = function(){
-        if (this.readystate == 4 && this.status == 200) {
-            document.getElementById("outputArea").innerHtml = this.responseText;
-            console.log(this.responseText);
-        }
-        document.getElementById("outputArea").innerHtml = this.responseText;
-        console.log(this.responseText);
-    };
-    request.open("POST", "localhost:3000/launch", true);
-    request.send();
-}
-    </script>
+
     <div id="wrapper">
         <div id="title">
             <h1>English To German Translator</h1>
         </div>
 
         <div>
-        <button onclick="launchModel()">Launch</button>
-        <button>Evaluate</button>
+        <button id="launch">Launch</button>
+        <button id="evaluate">Evaluate</button>
         <button>Reverse Phrase Order</button>
         <button>Set Epochs</button>
         </div>
 
         <div id="action">
         <h1>output</h1>
-        <div id = "outputArea"></div>
+        <pre id="outputArea"></pre>
         </div>
         
     </div>
