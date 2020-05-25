@@ -1,0 +1,10 @@
+scipy
+numpy
+matplotlib
+pandas
+statsmodels
+sklearn
+tensorflow
+keras
+graphviz
+pydot
