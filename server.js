@@ -5,10 +5,15 @@ var io = require('socket.io')(server);
 var path = require('path');
 var {PythonShell} = require('python-shell');
 PythonShell.defaultOptions = { scriptPath: './python'}
-
+var htmlOptionsEpochs =  process.env.EPOCHS;
 
 app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname+'/index.html'));
+    if(htmlOptionsEpochs == 50){
+        res.sendFile(path.join(__dirname+'/index_reverse_50.html'));
+    }
+    else{
+        res.sendFile(path.join(__dirname+'/index.html'))
+    }
 });
 
 io.on('connection', function(client) {
@@ -20,7 +25,9 @@ io.on('connection', function(client) {
 
     client.on('launch', function(data) {
         console.log(data);
-        var pyShell = new PythonShell('trainmodel.py');
+        var {order, epochs} = data;
+        var args = [order, epochs];
+        var pyShell = new PythonShell('trainmodel.py',{args});
         pyShell.on('message', function (message) {
             console.log(message);
             client.emit('launchResult', message);
