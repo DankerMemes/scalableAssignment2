@@ -1,60 +1,99 @@
 var express = require('express');
 var app = express();
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
 var path = require('path');
 var {PythonShell} = require('python-shell');
 PythonShell.defaultOptions = { scriptPath: './python'}
+
+
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname+'/index.html'));
 });
 
-app.post('/launch',function (req, res) {
-    var pyShell = new PythonShell('trainmodel.py');
-    var results = [];
-    pyShell.on('message', function (message) {
-        // received a message sent from the Python script (a simple "print" statement)
-        console.log(message);
-        results.push(message);
-      });
+io.on('connection', function(client) {
+    console.log('User Connected');
+    client.on('join', function(data) {
+        console.log(data);
+        client.emit('socketstatus', 'User is connected to english to german translator');
+    })
 
-      pyShell.end(function (err) {
-        if (err){
-            throw err;
-        };
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
-        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization')
-        res.send(results);
-    });
+    client.on('launch', function(data) {
+        console.log(data);
+        var pyShell = new PythonShell('trainmodel.py');
+        pyShell.on('message', function (message) {
+            console.log(message);
+            client.emit('launchResult', message);
+        });
+
+        pyShell.end(function (err) {
+            if (err){
+                throw err;
+            };
+        client.emit('launchFinished', 'Launch Complete');
+        })
 })
 
-app.get('/evaluate',function (req, res) {
-    var pyShell = new PythonShell('evaluatemodel.py');
-    var results = [];
-    pyShell.on('message', function (message) {
-        // received a message sent from the Python script (a simple "print" statement)
-        console.log(message);
-        results.push(message);
-      });
+    client.on('evaluate', function(data) {
+        console.log(data);
+        var pyShell = new PythonShell('evaluatemodel.py');
+        pyShell.on('message', function (message) {
+            console.log(message);
+            client.emit('evaluateResult', message);
+        });
 
-      pyShell.end(function (err) {
-        if (err){
-            throw err;
-        };
+        pyShell.end(function (err) {
+            if (err){
+                throw err;
+            };
+        client.emit('evaluateFinished', 'Evaluation Complete');
+        })
+    })
+})
+
+// app.get('/launch',function (req, res) {
+//     console.log("launch request recieved")
+//     var pyShell = new PythonShell('trainmodel.py');
+//     var results = [];
+//     pyShell.on('message', function (message) {
+//         // received a message sent from the Python script (a simple "print" statement)
+//         console.log(message);
+//         results.push(message);
+//       });
+
+//       pyShell.end(function (err) {
+//         if (err){
+//             throw err;
+//         };
+//         console.log('process completed')
+//         res.setHeader('Access-Control-Allow-Origin', '*');
+//         res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+//         res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization')
+//         res.send(results);
+//     });
+// })
+
+// app.get('/evaluate',function (req, res) {
+//     var pyShell = new PythonShell('evaluatemodel.py');
+//     var results = [];
+//     pyShell.on('message', function (message) {
+//         // received a message sent from the Python script (a simple "print" statement)
+//         console.log(message);
+//         results.push(message);
+//       });
+
+//       pyShell.end(function (err) {
+//         if (err){
+//             throw err;
+//         };
         
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
-        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization')
-        res.send(results);
-    });
-})
+//         res.setHeader('Access-Control-Allow-Origin', '*');
+//         res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+//         res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization')
+//         res.send(results);
+//     });
+// })
 
-app.post('/reverse',function (req, res) {
-    
-})
-
-app.get('/epochs/:total',function (req, res) {
-    
-})
-
-app.listen(8080);
-console.log("listening on port 3000");
+var port = 8080
+server.listen(port, '0.0.0.0');
+console.log("listening on port "+port);

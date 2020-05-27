@@ -5,38 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>English/German Translation</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
     <script>
-function launchModel(){
-    $.post( "http://localhost:3000/launch", function( data ) {
-        var outputstring = "";
-        for (let index = 0; index < data.length; index++) {
-            outputstring += data[index] + '\n';
+// function launchModel(){
+//     $.get( "http://localhost:3000/launch", function( data ) {
+//         var outputstring = "";
+//         for (let index = 0; index < data.length; index++) {
+//             outputstring += data[index] + '\n';
             
-        }
-        $( "#outputArea" ).html( outputstring );
-      });
+//         }
+//         $( "#outputArea" ).html( outputstring );
+//       });
 
-}
+// }
 
-function evaluateModel(){
-    $.get( "http://localhost:3000/evaluate", function( data ) {
-        var outputstring = "";
-        for (let index = 0; index < data.length; index++) {
-            outputstring += data[index] + '\n';
+// function evaluateModel(){
+//     $.get( "http://localhost:3000/evaluate", function( data ) {
+//         var outputstring = "";
+//         for (let index = 0; index < data.length; index++) {
+//             outputstring += data[index] + '\n';
             
-        }
-        $( "#outputArea" ).html( outputstring );
-      });
-}
+//         }
+//         $( "#outputArea" ).html( outputstring );
+//       });
+// }
+var socket = io.connect('http://localhost:8080');
+socket.on('connect', function(data) {
+    socket.emit('join', 'connection request from client');
+})
+
+socket.on('launchResult', function(data){
+    result = data + '\n';
+    $('#outputArea').append(result);
+})
+
+socket.on('launchFinished', function(data){
+    console.log(data);
+    $('#outputArea').append(data);
+})
+socket.on('evaluateResult', function(data){
+    result = data + '\n';
+    $('#outputArea').append(result);
+})
+
+socket.on('evaluateFinished', function(data){
+    console.log(data);
+    $('#outputArea').append(data);
+})
 $(document).ready(function(){
 $('#launch').on('click', function(){
+    $('#outputArea').empty();
     console.log('launching');
-    launchModel();
+    socket.emit('launch', 'params');
 })
 
 $('#evaluate').on('click', function(){
-    console.log('launching');
-    evaluateModel();
+    $('#outputArea').empty();
+    console.log('evaluating');
+    socket.emit('evaluate', 'params');
 })})
     </script>
 </head>
