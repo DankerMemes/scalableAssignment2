@@ -60,6 +60,13 @@ dataset = load_clean_sentences('english-german-both.pkl')
 train = load_clean_sentences('english-german-train.pkl')
 test = load_clean_sentences('english-german-test.pkl')
 
+if sys.argv[1] == "reverse":
+	dataset = dataset[::-1]
+	train = train[::-1]
+	test = test[::-1]
+	print("using reverse")
+
+numepochs = int(sys.argv[2])
 # prepare english tokenizer
 eng_tokenizer = create_tokenizer(dataset[:, 0])
 eng_vocab_size = len(eng_tokenizer.word_index) + 1
@@ -91,4 +98,4 @@ plot_model(model, to_file='model.png', show_shapes=True)
 # fit model
 filename = 'model.h5'
 checkpoint = ModelCheckpoint(filename, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
-model.fit(trainX, trainY, epochs=3, batch_size=64, validation_data=(testX, testY), callbacks=[checkpoint], verbose=2)
+model.fit(trainX, trainY, epochs=numepochs, batch_size=64, validation_data=(testX, testY), callbacks=[checkpoint], verbose=2)
