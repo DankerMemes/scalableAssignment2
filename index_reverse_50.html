@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>English/German Translation</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
     <script>
@@ -30,8 +31,6 @@
 //       });
 // }
 var socket = io.connect('http://localhost:8082', {
-        'sync disconnect on unload': true
-    }, {
         transports: ['websocket']
     });
 socket.on('connect', function(data) {
@@ -47,6 +46,7 @@ socket.on('launchResult', function(data){
 socket.on('launchFinished', function(data){
     console.log(data);
     $('#outputArea').append(data);
+    $('#loader').css('display', 'none');
 })
 socket.on('evaluateResult', function(data){
     result = data + '\n';
@@ -56,6 +56,7 @@ socket.on('evaluateResult', function(data){
 socket.on('evaluateFinished', function(data){
     console.log(data);
     $('#outputArea').append(data);
+    $('#loader').css('display', 'none');
 })
 $(document).ready(function(){
 epochs = $('#epochval').html();
@@ -73,11 +74,11 @@ $('#reverse').on('click', function(){
 })
 
 $('#changeepochs').on('click', function(){
-    if(epochs == 3){
-        epochs = 5;
+    if(epochs == 30){
+        epochs = 50;
     }
     else{
-        epochs = 3
+        epochs = 30
     }
     console.log(epochs)
     $('#epochval').html(epochs);
@@ -88,40 +89,60 @@ $('#launch').on('click', function(){
     console.log('launching');
     params = {order, epochs}
     socket.emit('launch', params);
+    $('#loader').css('display', 'block');
 })
 
 $('#evaluate').on('click', function(){
     $('#outputArea').empty();
     console.log('evaluating');
     socket.emit('evaluate', 'params');
+    $('#loader').css('display', 'block');
 })
 })
     </script>
 </head>
 <body>
-
-    <div id="wrapper">
-        <div id="title">
+        <div id="title" class="col-12" style="text-align: center;">
             <h1>English To German Translator</h1>
         </div>
-        <div id="options">
-            <h1>Epochs:</h1><h1 id="epochval">5</h1>
-            <h1>Order:</h1><h1 id="orderval">reverse</h1>
-        </div>
+        <div id="options" class="col-12">
+            <div class="col-12">
+            <div class="col-6" style="text-align: center;" >
+                <h1 style="float: left; padding-left: 180px">Epochs:</h1><h1 id="epochval" style="float: left; padding-left:20px">5</h1>
+            </div>
+            <div class="col-6" style="text-align: center;">
+                <h1 style="float: left; padding-left: 180px">Order:</h1><h1 id="orderval" style="float: left; padding-left:20px">reverse</h1>
+            </div>
 
-        <div>
-        <button id="launch">Launch</button>
-        <button id="evaluate">Evaluate</button>
-        <button id="reverse">Reverse Phrase Order</button>
-        <button id="changeepochs">Set Epochs</button>
-        </div>
-
-        <div id="action">
-        <h1>output</h1>
-        <pre id="outputArea"></pre>
+            </div>
+            
         </div>
         
-    </div>
+            <div class="col-12">
+                <div class="col-3" style="text-align: center;">
+                    <button id="launch">Launch</button>
+                </div>
+                <div class="col-3" style="text-align: center;">
+                    <button id="evaluate">Evaluate</button>
+                </div>
+                <div class="col-3" style="text-align: center;">
+                    <button id="reverse">Reverse Phrase Order</button>
+                </div>
+                <div class="col-3" style="text-align: center;">
+                    <button id="changeepochs">Set Epochs</button>
+                </div>
+            </div>
+
+            <div id="action" class="col-12" style="text-align: center;">
+            <h3>Output</h3>
+            <h1 id="loader"></h1>
+            </div>
+            <div class="col-12" id="box">
+                <pre id="outputArea"></pre>
+            </div>
+        </div>
+        
+        
 
     
 </body>
