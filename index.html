@@ -4,7 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>English/German Translation</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    
+    <style>
+        * {
+    box-sizing: border-box;
+  }
+  
+  .col-1 {width: 8.33%;}
+  .col-2 {width: 16.66%;}
+  .col-3 {width: 25%;}
+  .col-4 {width: 33.33%;}
+  .col-5 {width: 41.66%;}
+  .col-6 {width: 50%;}
+  .col-7 {width: 58.33%;}
+  .col-8 {width: 66.66%;}
+  .col-9 {width: 75%;}
+  .col-10 {width: 83.33%;}
+  .col-11 {width: 91.66%;}
+  .col-12 {width: 100%;}
+  
+  
+[class*="col-"] {
+    float: left;
+    padding: 15px;
+  }
+
+  button {
+      border-radius: 10px;
+      height: 50px;
+      width: 200px;
+      border-style:solid;
+      color: white;
+      background-color: #5bc0de;
+  }
+
+  button:hover{
+    background-color: #3c89a0;
+  }
+
+  #box{
+    border: 2px solid black;
+    height: 400px;
+    overflow-y: auto;
+    margin-bottom: 50px;
+    text-align: justify;
+  }
+
+  #loader {
+    border: 8px solid #858383; /* Light grey */
+    border-top: 8px solid #5bc0de; /* Blue */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 2s linear infinite;
+    position: relative;
+    left: 47.5%;
+    display: none;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+    </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
     <script>
